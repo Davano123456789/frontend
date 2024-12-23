@@ -44,44 +44,30 @@ function Sidebar({ children }) {
   };
 
   const handleLogout = async () => {
-    // Show confirmation dialog
     const result = await Swal.fire({
-      title: "Konfirmasi Logout",
+      title: "Anda Yakin?",
       text: "Apakah Anda yakin ingin keluar?",
-      icon: "question",
+      icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Ya, Keluar",
+      confirmButtonText: "Ya, Keluar!",
       cancelButtonText: "Batal",
     });
 
-    // If user confirms
     if (result.isConfirmed) {
       try {
-        const response = await axios.delete(
-          "https://medis-tanggap-be.vercel.app/logout",
-          {
-            withCredentials: true,
-          }
-        );
+        await axios.delete("https://medis-tanggap-be.vercel.app/logout", {
+          withCredentials: true,
+        });
 
-        if (response.status === 200) {
-          localStorage.removeItem("userData");
-          localStorage.removeItem("accessToken"); // Ubah 'token' menjadi 'accessToken'
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("userData");
+        window.dispatchEvent(new Event("authChange"));
 
-          // Dispatch event untuk memberitahu navbar
-          window.dispatchEvent(new Event("authChange"));
-
-          Swal.fire({
-            icon: "success",
-            title: "Logout Berhasil",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-
-          navigate("/");
-        }
+        Swal.fire("Telah Keluar!", "Logout Berhasil.", "success").then(() => {
+          navigate("/login");
+        });
       } catch (error) {
         console.error("Logout error:", error);
         Swal.fire({

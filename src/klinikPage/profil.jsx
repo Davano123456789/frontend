@@ -15,6 +15,7 @@ function Profil() {
   const userId = JSON.parse(localStorage.getItem("userData"))?.id;
 
   useEffect(() => {
+    console.log("UserId from localStorage:", userId);
     if (!userId) {
       window.location.href = "/login";
     } else {
@@ -39,6 +40,10 @@ function Profil() {
     if (image) {
       formData.append("images", image);
     }
+    // Menampilkan isi FormData untuk debugging
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
 
     try {
       const token = localStorage.getItem("accessToken");
@@ -48,7 +53,7 @@ function Profil() {
         formData,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, // Pastikan token valid
             "Content-Type": "multipart/form-data",
           },
           withCredentials: true,
@@ -60,10 +65,14 @@ function Profil() {
         setUserData(response.data.data);
       }
     } catch (error) {
-      console.error(
-        "Error updating profile:",
-        error.response?.data || error.message
-      );
+      console.error("Error updating profile:", error);
+
+      // Menampilkan kesalahan lebih rinci di console
+      console.error("Error Response Data:", error.response?.data);
+      console.error("Error Status Code:", error.response?.status);
+      console.error("Error Headers:", error.response?.headers);
+
+      // Menampilkan pesan kesalahan ke pengguna
       alert(error.response?.data?.message || "Failed to update profile");
     }
   };

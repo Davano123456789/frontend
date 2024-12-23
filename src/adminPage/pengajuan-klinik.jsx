@@ -113,7 +113,7 @@ function PengajuanKlinik() {
                   <td>{clinic.address}</td>
                   <td>
                     <a
-                      href={`https://medis-tanggap-be.vercel.app/uploads/${clinic.ktp_owner}`}
+                      href={`https://res.cloudinary.com/dbu5xnoj7/image/upload/${clinic.ktp_owner}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       download
@@ -123,7 +123,7 @@ function PengajuanKlinik() {
                   </td>
                   <td>
                     <a
-                      href={`https://medis-tanggap-be.vercel.app/uploads/${clinic.operation_license}`}
+                      href={`https://res.cloudinary.com/dbu5xnoj7/image/upload/${clinic.operation_license}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       download
@@ -131,6 +131,7 @@ function PengajuanKlinik() {
                       Lihat Surat Jalan
                     </a>
                   </td>
+
                   <td>
                     {new Date(clinic.createdAt).toLocaleString("id-ID", {
                       timeZone: "Asia/Jakarta",

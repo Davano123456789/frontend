@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import axios from "axios"; // Import axios
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import Swal from "sweetalert2";
 import "./Clinic.css";
 
 const Clinic = () => {
@@ -60,44 +61,39 @@ const Clinic = () => {
       return;
     }
 
-    formData.append("user_id", userData.id); // Menambahkan user_id ke formData
+    formData.append("user_id", userData.id);
 
     try {
-      const response = await fetch(
+      const response = await axios.post(
         "https://medis-tanggap-be.vercel.app/api/add",
+        formData,
         {
-          method: "POST",
           headers: {
-            Authorization: `Bearer ${token}`, // Menggunakan token untuk otentikasi
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
           },
-          body: formData,
         }
       );
 
-      const data = await response.json();
-      if (response.ok) {
-        Swal.fire({
-          icon: "success",
-          title: "Klinik berhasil ditambahkan!",
-          text: data.message,
-        });
-        setClinicName("");
-        setAddress("");
-        setKtpFile(null);
-        setIzinFile(null);
-      } else {
-        Swal.fire({
-          icon: "error",
-          title: "Gagal menambahkan klinik!",
-          text: data.message || "Terjadi kesalahan. Silakan coba lagi.",
-        });
-      }
+      Swal.fire({
+        icon: "success",
+        title: "Klinik berhasil ditambahkan!",
+        text: response.data.message,
+      });
+
+      // Reset form
+      setClinicName("");
+      setAddress("");
+      setKtpFile(null);
+      setIzinFile(null);
     } catch (error) {
       console.error("Error:", error);
       Swal.fire({
         icon: "error",
-        title: "Terjadi kesalahan",
-        text: "Silakan coba lagi.",
+        title: "Gagal menambahkan klinik!",
+        text:
+          error.response?.data?.message ||
+          "Terjadi kesalahan. Silakan coba lagi.",
       });
     }
   };

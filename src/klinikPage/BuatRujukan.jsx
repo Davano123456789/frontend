@@ -1,49 +1,49 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import SidebarKlinik from '../components/sidebarKlinik';
-import './rujukan.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import SidebarKlinik from "../components/sidebarKlinik";
+import "./rujukan.css";
 
 // Configure axios defaults globally
-axios.defaults.baseURL = 'http://localhost:5000';
-axios.defaults.headers.common['Content-Type'] = 'application/json';
+axios.defaults.baseURL = "https://medis-tanggap-be.vercel.app";
+axios.defaults.headers.common["Content-Type"] = "application/json";
 axios.defaults.withCredentials = true;
 
 function BuatRujukan() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState({
-    no_rujukan: '',
-    tanggal: new Date().toISOString().split('T')[0],
-    rs_tujuan: '',
-    no_kartu: '',
-    name_patient: '',
-    gender: 'male',
-    address: '',
-    birthday_date: '',
-    diagnosis: '',
-    description: '',
-    doctor: '',
+    no_rujukan: "",
+    tanggal: new Date().toISOString().split("T")[0],
+    rs_tujuan: "",
+    no_kartu: "",
+    name_patient: "",
+    gender: "male",
+    address: "",
+    birthday_date: "",
+    diagnosis: "",
+    description: "",
+    doctor: "",
   });
 
   // Function to generate rujukan number
   const generateRujukanNumber = async () => {
     try {
-      const response = await axios.get('/api/rujukan/count/today');
+      const response = await axios.get("/api/rujukan/count/today");
       const { nextSequence } = response.data;
 
       const date = new Date();
       const year = date.getFullYear().toString();
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
 
       // Format sequence number to 4 digits
-      const sequence = nextSequence.toString().padStart(4, '0');
+      const sequence = nextSequence.toString().padStart(4, "0");
 
       // Format: YYYYMMDD-XXXX
       const rujukanNumber = `${year}${month}${day}-${sequence}`;
 
-      console.log('Generated rujukan number:', rujukanNumber); // Debug log
+      console.log("Generated rujukan number:", rujukanNumber); // Debug log
 
       setFormData((prev) => ({
         ...prev,
@@ -53,7 +53,7 @@ function BuatRujukan() {
       setIsLoading(false);
       return rujukanNumber;
     } catch (error) {
-      console.error('Error generating rujukan number:', error);
+      console.error("Error generating rujukan number:", error);
       setIsLoading(false);
       throw error;
     }
@@ -73,7 +73,7 @@ function BuatRujukan() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isLoading) {
-      alert('Mohon tunggu, nomor rujukan sedang dibuat');
+      alert("Mohon tunggu, nomor rujukan sedang dibuat");
       return;
     }
 
@@ -81,11 +81,11 @@ function BuatRujukan() {
       // Format data before sending
       const dataToSubmit = {
         no_rujukan: formData.no_rujukan.trim(),
-        tanggal: new Date().toISOString().split('T')[0],
+        tanggal: new Date().toISOString().split("T")[0],
         rs_tujuan: formData.rs_tujuan.trim(),
         no_kartu: formData.no_kartu.trim(),
         name_patient: formData.name_patient.trim(),
-        gender: formData.gender === 'male' ? 'Laki-laki' : 'Perempuan',
+        gender: formData.gender === "male" ? "Laki-laki" : "Perempuan",
         address: formData.address.trim(),
         birthday_date: formData.birthday_date,
         diagnosis: formData.diagnosis.trim(),
@@ -94,19 +94,19 @@ function BuatRujukan() {
       };
 
       // Log the data being sent
-      console.log('Submitting data:', dataToSubmit);
+      console.log("Submitting data:", dataToSubmit);
 
-      const response = await axios.post('/api/rujukan', dataToSubmit);
+      const response = await axios.post("/api/rujukan", dataToSubmit);
 
-      console.log('Server response:', response.data);
-      alert('Rujukan berhasil dibuat!');
-      navigate('/dashboard/rujukan');
+      console.log("Server response:", response.data);
+      alert("Rujukan berhasil dibuat!");
+      navigate("/dashboard/rujukan");
     } catch (error) {
-      console.error('Submit error:', error.response?.data);
+      console.error("Submit error:", error.response?.data);
       const errorMessage =
         error.response?.data?.message ||
         error.response?.data?.details?.[0] ||
-        'Gagal membuat rujukan. Silakan coba lagi.';
+        "Gagal membuat rujukan. Silakan coba lagi.";
       alert(errorMessage);
     }
   };
@@ -237,7 +237,7 @@ function BuatRujukan() {
               value={formData.description}
               onChange={handleChange}
             />
-          </div>{' '}
+          </div>{" "}
           <div className="mb-3">
             <label htmlFor="doctor" className="form-label">
               Dokter Pemeriksa
@@ -256,7 +256,7 @@ function BuatRujukan() {
             className="btn btn-primary"
             disabled={isLoading}
           >
-            {isLoading ? 'Memuat...' : 'Konfirmasi'}
+            {isLoading ? "Memuat..." : "Konfirmasi"}
           </button>
         </form>
       </div>
